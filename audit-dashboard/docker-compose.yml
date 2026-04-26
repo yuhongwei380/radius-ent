@@ -1,6 +1,6 @@
 services:
   web:
-    image: ${WEB_IMAGE:-yuhonwei1997/radius-ent:audit-dashboard-v5.0}
+    image: ${WEB_IMAGE:-yuhongwei1997/radius-ent:audit-dashboard-v5.0}
     command:
       - gunicorn
       - --bind
@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   collector:
-    image: ${COLLECTOR_IMAGE:-yuhonwei1997/radius-ent:audit-dashboard-v5.0}
+    image: ${COLLECTOR_IMAGE:-yuhongwei1997/radius-ent:audit-dashboard-v5.0}
     command: python collector.py
     environment:
       AUDIT_DB_FILE: /data/audit_logs.db
