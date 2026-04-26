@@ -1,8 +1,9 @@
 #base on Freeradius v3.2.1 support audit log and audit exporter
 services:
+  freeradius:
     image: yuhongwei1997/radius-ent:freeradius-azure-v5.0
     container_name: radius-azure-v5
-    environment:      
+    environment:
       - REALM_NAME=your_domain
       - Azure_App_Client_ID=app_client_id
       #- Azure_App_Client_Secret=app_client_secret
@@ -18,8 +19,7 @@ services:
       - ./ssl/radius_ca.pem:/etc/freeradius/certs/ssl/radius_ca.pem
       - ./clients.conf:/etc/freeradius/clients.conf
       # 3. 新增：将容器内的日志目录映射出来，方便在宿主机直接 tail -f 查看计费日志
-      - ./logs:/var/log/freeradius 
-      
+      - ./logs:/var/log/freeradius
     network_mode: host
     restart: always
     # 健康检查：测试 RADIUS 服务是否响应
@@ -29,15 +29,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-# ========== 新增的审计 Exporter 服务 ==========
-    audit-exporter:
-    container_name: yuhongwei1997/radius-ent:audit-exporter-v5.0
+
+  # ========== 新增的审计 Exporter 服务 ==========
+  audit-exporter:
+    image: yuhongwei1997/radius-ent:audit-exporter-v5.0
+    container_name: audit-exporter
     environment:
       - AUDIT_API_TOKEN=fe269087a58d3b98f722f89b
       - AUDIT_STREAM_FILE_PATH=/var/log/freeradius/audit_stream.jsonl
     volumes:
       # 以只读 (ro) 模式挂载日志目录，绝不影响 radius 写入
-      - ./logs:/var/log/freeradius:ro 
+      - ./logs:/var/log/freeradius:ro
     ports:
       - "${AUDIT_EXPORTER_PORT:-9090}:9090"
     restart: always

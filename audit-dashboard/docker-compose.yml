@@ -14,8 +14,6 @@ services:
       - app:app
     ports:
       - "5000:5000"
-    env_file:
-      - .env
     environment:
       AUDIT_DB_FILE: /data/audit_logs.db
       AUDIT_LOG_DIR: /logs
@@ -27,8 +25,6 @@ services:
   collector:
     image: ${COLLECTOR_IMAGE:-yuhonwei1997/radius-ent:audit-dashboard-v5.0}
     command: python collector.py
-    env_file:
-      - .env
     environment:
       AUDIT_DB_FILE: /data/audit_logs.db
       AUDIT_LOG_DIR: /logs
