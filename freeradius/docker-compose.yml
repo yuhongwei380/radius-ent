@@ -5,7 +5,7 @@ services:
     environment:      
       - REALM_NAME=your_domain
       - Azure_App_Client_ID=app_client_id
-      - Azure_App_Client_Secret=app_client_secret
+      #- Azure_App_Client_Secret=app_client_secret
       # Azure_App_Client_Secret和Azure_App_Client_Key_Path&Azure_App_Client_Cert_Path二选一，前者适合测试环境，后者适合生产环境
       - Azure_App_Client_Key_Path=/etc/freeradius/ssl/azure_app_radius_key.pem
       - Azure_App_Client_Cert_Path=/etc/freeradius/ssl/azure_app_radius_cert.pem
