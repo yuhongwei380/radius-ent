@@ -1,0 +1,42 @@
+services:
+  web:
+    image: ${WEB_IMAGE:-yuhonwei1997/radius-ent:audit-dashboard-v5.0}
+    command:
+      - gunicorn
+      - --bind
+      - 0.0.0.0:5000
+      - --workers
+      - ${GUNICORN_WORKERS:-2}
+      - --threads
+      - ${GUNICORN_THREADS:-4}
+      - --timeout
+      - ${GUNICORN_TIMEOUT:-30}
+      - app:app
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      AUDIT_DB_FILE: /data/audit_logs.db
+      AUDIT_LOG_DIR: /logs
+    volumes:
+      - audit-data:/data
+      - audit-logs:/logs
+    restart: unless-stopped
+
+  collector:
+    image: ${COLLECTOR_IMAGE:-yuhonwei1997/radius-ent:audit-dashboard-v5.0}
+    command: python collector.py
+    env_file:
+      - .env
+    environment:
+      AUDIT_DB_FILE: /data/audit_logs.db
+      AUDIT_LOG_DIR: /logs
+    volumes:
+      - audit-data:/data
+      - audit-logs:/logs
+    restart: unless-stopped
+
+volumes:
+  audit-data:
+  audit-logs:

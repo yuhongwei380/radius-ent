@@ -1,0 +1,43 @@
+#base on Freeradius v3.2.1 support audit log and audit exporter
+services:
+    image: yuhongwei1997/radius-ent:freeradius-azure-v5.0
+    container_name: radius-azure-v5
+    environment:      
+      - REALM_NAME=your_domain
+      - Azure_App_Client_ID=app_client_id
+      - Azure_App_Client_Secret=app_client_secret
+      # Azure_App_Client_Secret和Azure_App_Client_Key_Path&Azure_App_Client_Cert_Path二选一，前者适合测试环境，后者适合生产环境
+      - Azure_App_Client_Key_Path=/etc/freeradius/ssl/azure_app_radius_key.pem
+      - Azure_App_Client_Cert_Path=/etc/freeradius/ssl/azure_app_radius_cert.pem
+    volumes:
+      - ./ssl/azure_app_radius_cert.pem:/etc/freeradius/ssl/azure_app_radius_cert.pem
+      - ./ssl/azure_app_radius_key.pem:/etc/freeradius/ssl/azure_app_radius_key.pem
+      # 如果env中选择了Azure_App_Client_Secret而不是Azure_App_Client_Key_Path&Azure_App_Client_Cert_Path，则上面两行可以注释掉，因为不需要将证书和密钥文件挂载到容器中
+      - ./ssl/radius.key:/etc/freeradius/certs/ssl/radius.key
+      - ./ssl/radius.crt:/etc/freeradius/certs/ssl/radius.crt
+      - ./ssl/radius_ca.pem:/etc/freeradius/certs/ssl/radius_ca.pem
+      - ./clients.conf:/etc/freeradius/clients.conf
+      # 3. 新增：将容器内的日志目录映射出来，方便在宿主机直接 tail -f 查看计费日志
+      - ./logs:/var/log/freeradius 
+      
+    network_mode: host
+    restart: always
+    # 健康检查：测试 RADIUS 服务是否响应
+    healthcheck:
+      test: ["CMD-SHELL", "radtest healthcheck healthcheck 127.0.0.1 0 testing123 || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+# ========== 新增的审计 Exporter 服务 ==========
+    audit-exporter:
+    container_name: yuhongwei1997/radius-ent:audit-exporter-v5.0
+    environment:
+      - AUDIT_API_TOKEN=fe269087a58d3b98f722f89b
+      - AUDIT_STREAM_FILE_PATH=/var/log/freeradius/audit_stream.jsonl
+    volumes:
+      # 以只读 (ro) 模式挂载日志目录，绝不影响 radius 写入
+      - ./logs:/var/log/freeradius:ro 
+    ports:
+      - "${AUDIT_EXPORTER_PORT:-9090}:9090"
+    restart: always
