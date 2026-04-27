@@ -14,6 +14,9 @@
 - 已经明确用户认证时使用的邮箱域名后缀，例如 `example.com`
 - 已有 支持配置RADIUS或者802.1X协议的 网络设备，例如交换机、AC、AP 控制器或测试终端
 - AC配置: 本项目以华为9700S-S举例:
+   - huawei ac 配置Radius设置
+     - 选择安全管理-AAA-Radius设置
+     - 找到Radius服务器模板-打开认证以及计费功能，填写共享密钥
    - huawei ac 中需要开启 `计费功能`
    - 计费方案需要开启 `实时计费`：
       - 路径: `AP组配置-wlan-access-VAP配置-wlan名称-认证模板-RADIUS服务器配置`
