@@ -18,8 +18,9 @@ services:
       AUDIT_DB_FILE: /data/audit_logs.db
       AUDIT_LOG_DIR: /logs
     volumes:
-      - audit-data:/data
-      - audit-logs:/logs
+      # 格式为 - 宿主机路径:容器内路径
+      - ./data:/data
+      - ./logs:/logs
     restart: unless-stopped
 
   collector:
@@ -29,10 +30,6 @@ services:
       AUDIT_DB_FILE: /data/audit_logs.db
       AUDIT_LOG_DIR: /logs
     volumes:
-      - audit-data:/data
-      - audit-logs:/logs
+      - ./data:/data
+      - ./logs:/logs
     restart: unless-stopped
-
-volumes:
-  audit-data:
-  audit-logs:
