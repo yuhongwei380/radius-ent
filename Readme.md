@@ -166,6 +166,15 @@ openssl genrsa -out radius_ca.key 2048
 openssl req -new -x509 -key radius_ca.key -out radius_ca.pem -days 3650 -sha256
 openssl x509 -req -in radius.csr -CA radius_ca.pem -CAkey radius_ca.key -CAcreateserial -out radius.crt -days 3650 -sha256
 openssl verify -CAfile radius_ca.pem radius.crt
+
+
+
+openssl genrsa -out radius.key 2048
+openssl req -new -key radius.key -out radius.csr -subj "/C=CN/ST=hangzhou/L=hangzhou/O=radius/CN=radius.com.cn"
+openssl genrsa -out radius_ca.key 2048
+openssl req -new -x509 -key radius_ca.key -out radius_ca.pem -days 36500 -sha256 -subj "/C=CN/ST=hangzhou/L=hangzhou/O=radius/CN=radius CA"
+openssl x509 -req -in radius.csr -CA radius_ca.pem -CAkey radius_ca.key -CAcreateserial -out radius.crt -days 36500 -sha256
+openssl verify -CAfile radius_ca.pem radius.crt
 ```
 
 #### 3.1.2 需要准备证书和用到之前Azure证书`azure_app_radius_key.pem` 以及`azure_app_radius_cert.pem`
