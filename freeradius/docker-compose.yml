@@ -1,7 +1,7 @@
 #base on Freeradius v3.2.1 support audit log and audit exporter
 services:
   freeradius:
-    image: yuhongwei1997/radius-ent:freeradius-azure-v5.0
+    image: yuhongwei1997/radius-ent:freeradius-azure-v5.1
     container_name: radius-azure-v5
     environment:
       - REALM_NAME=your_domain
