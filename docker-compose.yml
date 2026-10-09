@@ -1,8 +1,8 @@
-# FreeRADIUS Platform v26.10.1 with FreeRADIUS 3.2 and integrated audit exporter
+# FreeRADIUS Platform v26.10.2 with FreeRADIUS 3.2 and integrated audit exporter
 services:
   radius-service:
-    image: ${RADIUS_IMAGE:-yuhongwei1997/radius-ent:radius-server-v26.10.1}
-    container_name: radius-azure-v26.10.1
+    image: ${RADIUS_IMAGE:-yuhongwei1997/radius-ent:radius-server-v26.10.2}
+    container_name: radius-azure-v26.10.2
     environment:
       - AUDIT_API_TOKEN_FILE=/runtime/freeradius-platform/secrets/audit_api_token
       - AUDIT_STREAM_FILE_PATH=/var/log/freeradius/audit_stream.jsonl
@@ -33,7 +33,7 @@ services:
     depends_on:
       radius-service:
         condition: service_started
-    image: ${PLATFORM_IMAGE:-yuhongwei1997/radius-ent:radius-platform-v26.10.1}
+    image: ${PLATFORM_IMAGE:-yuhongwei1997/radius-ent:radius-platform-v26.10.2}
     container_name: freeradius-platform
     environment:
       - FREERADIUS_PLATFORM_DATA_ROOT=/data/runtime
